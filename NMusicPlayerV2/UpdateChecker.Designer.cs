@@ -30,6 +30,7 @@
         {
             StatusLabel = new Label();
             progressBar = new ProgressBar();
+            CancelButton = new Button();
             SuspendLayout();
             // 
             // StatusLabel
@@ -45,21 +46,32 @@
             // 
             progressBar.Location = new Point(12, 32);
             progressBar.Name = "progressBar";
-            progressBar.Size = new Size(451, 29);
+            progressBar.Size = new Size(451, 21);
             progressBar.TabIndex = 1;
+            // 
+            // CancelButton
+            // 
+            CancelButton.Location = new Point(369, 59);
+            CancelButton.Name = "CancelButton";
+            CancelButton.Size = new Size(94, 29);
+            CancelButton.TabIndex = 2;
+            CancelButton.Text = "Cancel";
+            CancelButton.UseVisualStyleBackColor = true;
+            CancelButton.Click += CancelButton_Click;
             // 
             // UpdateChecker
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(475, 94);
+            Controls.Add(CancelButton);
             Controls.Add(progressBar);
             Controls.Add(StatusLabel);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "UpdateChecker";
-            Text = "Checking for Updates...";
+            Text = "NMusicPlayer V2 - Checking for Updates...";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -68,5 +80,6 @@
 
         private Label StatusLabel;
         private ProgressBar progressBar;
+        private Button CancelButton;
     }
 }

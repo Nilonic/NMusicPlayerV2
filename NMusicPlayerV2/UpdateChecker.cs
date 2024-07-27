@@ -10,6 +10,8 @@ namespace NMusicPlayerV2
     {
         private readonly string _internalVersion = "0.0.0";
 
+        public event Action UpdateCheckCompleted;
+
         public UpdateChecker()
         {
             InitializeComponent();
@@ -18,7 +20,6 @@ namespace NMusicPlayerV2
 
         private async void CheckForUpdates()
         {
-            // first of all, are we connected to the internet?
             if (IsConnectedToInternet())
             {
                 StatusLabel.Text = "Checking...";
@@ -28,17 +29,15 @@ namespace NMusicPlayerV2
 
                 try
                 {
-                    // Fetch the latest version from the remote server
                     using (var httpClient = new HttpClient())
                     {
                         string remoteVersion = await httpClient.GetStringAsync(CheckLocation);
-                        remoteVersion = remoteVersion.Trim(); // Trim any extraneous whitespace
+                        remoteVersion = remoteVersion.Trim();
 
-                        // Compare versions
                         if (string.Compare(remoteVersion, _internalVersion) > 0)
                         {
                             StatusLabel.Text = $"Update available: {remoteVersion}";
-                            // Optionally, provide a way to update
+                            // Optionally handle the update prompt here
                         }
                         else
                         {
@@ -50,7 +49,6 @@ namespace NMusicPlayerV2
                 {
                     StatusLabel.Text = "Error checking for updates.";
                     MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK);
-                    // Log exception or handle as needed
                 }
             }
             else
@@ -58,7 +56,12 @@ namespace NMusicPlayerV2
                 StatusLabel.Text = "Not connected. Please check your internet connection.";
             }
 
-            progressBar.Value = 100; // Update progress bar to complete
+            progressBar.Value = 100;
+            await Task.Delay(2000);
+
+            // Notify that the update check is complete
+            UpdateCheckCompleted?.Invoke();
+            this.Close();
         }
 
         private bool IsConnectedToInternet()
@@ -72,6 +75,11 @@ namespace NMusicPlayerV2
             {
                 return false;
             }
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
