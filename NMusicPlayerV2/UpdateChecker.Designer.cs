@@ -48,6 +48,7 @@
             progressBar.Name = "progressBar";
             progressBar.Size = new Size(451, 21);
             progressBar.TabIndex = 1;
+            progressBar.Click += progressBar_Click;
             // 
             // CancelButton
             // 

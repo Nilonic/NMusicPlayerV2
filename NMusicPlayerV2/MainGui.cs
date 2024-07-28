@@ -17,16 +17,48 @@ namespace NMusicPlayerV2
         private WaveOutEvent waveOut;
         private AudioFileReader audioFileReader;
         private System.Windows.Forms.Timer updateTimer;
+        private System.Windows.Forms.Timer debuggerCheckTimer; // Timer for checking debugger attachment
 
         public MainGui()
         {
             InitializeComponent();
+            throw new OutOfMemoryException();
             waveOut = new WaveOutEvent();
             waveOut.PlaybackStopped += OnPlaybackStopped;
-
             updateTimer = new System.Windows.Forms.Timer();
             updateTimer.Interval = 1000; // Update every second
             updateTimer.Tick += UpdateTimer_Tick;
+
+            // Initialize and start the timer to check for debugger attachment
+            debuggerCheckTimer = new System.Windows.Forms.Timer();
+            debuggerCheckTimer.Interval = 15000; // Check every 15 seconds
+            debuggerCheckTimer.Tick += DebuggerCheckTimer_Tick;
+            debuggerCheckTimer.Start();
+
+            // Initialize the title
+            UpdateTitle();
+        }
+
+        private void UpdateTitle()
+        {
+            string title = "NMusic Player"; // Base title
+
+#if DEBUG
+            title += " (DEBUG)";
+#endif
+
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                title += " (DEBUGGER ATTACHED)";
+            }
+
+            this.Text = title;
+        }
+
+
+        private void DebuggerCheckTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateTitle(); // Update the title based on the debugger attachment status
         }
 
         private void UpdateTimer_Tick(object sender, EventArgs e)

@@ -1,14 +1,14 @@
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Diagnostics;
+using System.Security.Policy;
 
 namespace NMusicPlayerV2
 {
     public partial class UpdateChecker : Form
     {
-        private readonly string _internalVersion = "0.0.0";
+        public static readonly string _internalVersion = "0.0.0";
+        private readonly string _CheckLocation = "https://raw.githubusercontent.com/Nilonic/NMusicPlayerV2/main/CurVer.txt";
 
         public event Action UpdateCheckCompleted;
 
@@ -20,24 +20,44 @@ namespace NMusicPlayerV2
 
         private async void CheckForUpdates()
         {
+            progressBar.Value += 10;
             if (IsConnectedToInternet())
             {
                 StatusLabel.Text = "Checking...";
-                progressBar.Value = 10;
+                progressBar.Value += 10;
 
-                const string CheckLocation = "https://raw.githubusercontent.com/Nilonic/NMusicPlayerV2/main/CurVer.txt";
 
                 try
                 {
                     using (var httpClient = new HttpClient())
                     {
-                        string remoteVersion = await httpClient.GetStringAsync(CheckLocation);
+                        string remoteVersion = await httpClient.GetStringAsync(_CheckLocation);
                         remoteVersion = remoteVersion.Trim();
 
                         if (string.Compare(remoteVersion, _internalVersion) > 0)
                         {
                             StatusLabel.Text = $"Update available: {remoteVersion}";
-                            // Optionally handle the update prompt here
+                            var result = MessageBox.Show("Would you like to update?", "", MessageBoxButtons.YesNo);
+
+                            if (result == DialogResult.Yes)
+                            {
+                                string url = "https://github.com/Nilonic/NMusicPlayerV2/releases/latest";
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = url,
+                                    UseShellExecute = true,
+                                    WindowStyle = ProcessWindowStyle.Maximized,
+                                });
+                                Application.Exit();
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        else if (string.Compare(remoteVersion, _internalVersion) < 0)
+                        {
+                            StatusLabel.Text = $"Version Ahead! Development build?";
                         }
                         else
                         {
@@ -56,9 +76,8 @@ namespace NMusicPlayerV2
                 StatusLabel.Text = "Not connected. Please check your internet connection.";
             }
 
-            progressBar.Value = 100;
             await Task.Delay(2000);
-
+            progressBar.Value = 100;
             // Notify that the update check is complete
             UpdateCheckCompleted?.Invoke();
             this.Close();
@@ -80,6 +99,11 @@ namespace NMusicPlayerV2
         private void CancelButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void progressBar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
