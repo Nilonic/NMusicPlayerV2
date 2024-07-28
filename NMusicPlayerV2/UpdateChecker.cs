@@ -21,7 +21,7 @@ namespace NMusicPlayerV2
         private async void CheckForUpdates()
         {
             progressBar.Value += 10;
-            if (IsConnectedToInternet())
+            if (IsConnectedToInternet)
             {
                 StatusLabel.Text = "Checking...";
                 progressBar.Value += 10;
@@ -83,16 +83,19 @@ namespace NMusicPlayerV2
             this.Close();
         }
 
-        private bool IsConnectedToInternet()
+        private static bool IsConnectedToInternet
         {
-            try
+            get
             {
-                var host = Dns.GetHostEntry("www.google.com");
-                return host != null;
-            }
-            catch
-            {
-                return false;
+                try
+                {
+                    var host = Dns.GetHostEntry("www.google.com");
+                    return host != null;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 

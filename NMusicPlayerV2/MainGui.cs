@@ -8,7 +8,7 @@ namespace NMusicPlayerV2
 {
     public partial class MainGui : Form
     {
-        private List<string> trackList = new List<string>();
+        private List<string> trackList = [];
         private int currentTrackIndex = -1;
         private bool isPlaying = false;
         private bool isLooping = false;
@@ -22,16 +22,20 @@ namespace NMusicPlayerV2
         public MainGui()
         {
             InitializeComponent();
-            throw new OutOfMemoryException();
+            //throw new OutOfMemoryException();
             waveOut = new WaveOutEvent();
             waveOut.PlaybackStopped += OnPlaybackStopped;
-            updateTimer = new System.Windows.Forms.Timer();
-            updateTimer.Interval = 1000; // Update every second
+            updateTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 1000 // Update every second
+            };
             updateTimer.Tick += UpdateTimer_Tick;
 
             // Initialize and start the timer to check for debugger attachment
-            debuggerCheckTimer = new System.Windows.Forms.Timer();
-            debuggerCheckTimer.Interval = 15000; // Check every 15 seconds
+            debuggerCheckTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 15000 // Check every 15 seconds
+            };
             debuggerCheckTimer.Tick += DebuggerCheckTimer_Tick;
             debuggerCheckTimer.Start();
 
@@ -65,7 +69,7 @@ namespace NMusicPlayerV2
         {
             if (audioFileReader != null)
             {
-                TimeLeft.Text = $"Time Left: {(audioFileReader.TotalTime - audioFileReader.CurrentTime).ToString(@"mm\:ss")}";
+                TimeLeft.Text = $"Time Left: {audioFileReader.TotalTime - audioFileReader.CurrentTime:mm\\:ss}";
             }
         }
 
@@ -140,7 +144,7 @@ namespace NMusicPlayerV2
 
         private void LoadTracks_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using OpenFileDialog openFileDialog = new();
             {
                 openFileDialog.Multiselect = true;
                 openFileDialog.Filter = "Audio Files|*.mp3;*.wav;*.flac|All Files|*.*";

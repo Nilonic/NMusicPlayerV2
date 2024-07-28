@@ -109,7 +109,7 @@
             LoopButton.Name = "LoopButton";
             LoopButton.Size = new Size(94, 29);
             LoopButton.TabIndex = 5;
-            LoopButton.Text = "Loop (off)";
+            LoopButton.Text = "Not Looping";
             LoopButton.UseVisualStyleBackColor = true;
             LoopButton.Click += LoopButton_Click;
             // 
